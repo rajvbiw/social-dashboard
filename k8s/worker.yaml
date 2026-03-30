@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: social-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: rajbirari9737/social-dashboard-backend:latest
+          command: ["node", "worker.js"]
+          envFrom:
+            - configMapRef:
+                name: social-dashboard-config
+            - secretRef:
+                name: social-dashboard-secrets
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          imagePullPolicy: IfNotPresent
